@@ -11,7 +11,7 @@ class RedditScraper:
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
-
+        self.posts_fetched = 0
         self.max_posts_per_request = 100 # Reddit API limits: ~100 posts per request
         self.request_delay = 2  # seconds between requests to avoid rate limiting
         
@@ -19,11 +19,11 @@ class RedditScraper:
 
         all_posts = []
         after = None  # Pagination token
-        posts_fetched = 0
+        self.posts_fetched = 0
         
-        while posts_fetched < num_posts:
+        while self.posts_fetched < num_posts:
 
-            posts_remaining = num_posts - posts_fetched
+            posts_remaining = num_posts - self.posts_fetched
             limit = min(self.max_posts_per_request, posts_remaining)
             
             try:
@@ -35,9 +35,9 @@ class RedditScraper:
                     break
                 
                 all_posts.extend(batch_posts)
-                posts_fetched += len(batch_posts)
+                self.posts_fetched += len(batch_posts)
                 
-                print(f"Fetched {posts_fetched}/{num_posts} posts...")
+                print(f"Fetched {self.posts_fetched}/{num_posts} posts...")
                 
                 if after is None:
                     print("Reached end of available posts")
