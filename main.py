@@ -3,6 +3,7 @@ import json
 import os
 from reddit_scraper import RedditScraper
 import os
+from preprocess import Preprocessor
 
 def main():
     '''
@@ -54,11 +55,19 @@ def main():
     
     print(f"\nFetch completed")
     
-    # save raw post to a json file
     print(f"Number of raw posts:{len(raw_posts)}")
+
+    # ===============Preprocess===================
+
+    preprocessor = Preprocessor()
+    
+    print("\nPreprocessing data...")
+    processed_posts = preprocessor.preprocess_posts(raw_posts)
+    
     output_path = os.path.join("./data", args.output)
-    with open(output_path, "w") as f:
-        json.dump(raw_posts, f, indent = 4)
+    preprocessor.save_to_json(processed_posts, output_path)
+    
+    print(f"\nPreprocessing completed.")
 
 if __name__ == "__main__":
     main()
