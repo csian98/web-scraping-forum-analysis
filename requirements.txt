@@ -4,3 +4,7 @@ playwright
 pandas
 snowflake-connector-python[pandas]
 python-dotenv
+emoji
+nltk
+scikit-learn
+gensim

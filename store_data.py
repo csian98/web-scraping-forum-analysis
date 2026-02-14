@@ -1,7 +1,7 @@
 import argparse
 from reddit_scraper import RedditScraper
 from preprocess import Preprocessor
-from snowflake_util import load_posts_to_staging, merge_to_posts
+from snowflake_util import get_connection, load_posts_to_staging, merge_to_posts
 import os
 import pandas as pd
 
@@ -64,6 +64,9 @@ print(f"Number of raw posts:{len(all_posts)}")
 print(f"\nPreprocessing completed.")
 
 posts_df = pd.DataFrame(all_posts)
+posts_df.to_csv("data/raw_posts.csv", index=False)
 
-load_posts_to_staging(posts_df)
-merge_to_posts()
+con = get_connection()
+load_posts_to_staging(posts_df, con)
+merge_to_posts(con)
+con.close()
