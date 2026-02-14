@@ -1,6 +1,8 @@
 import json
 import re
 import string
+import pandas as pd
+import emoji
 
 import nltk
 from nltk.corpus import stopwords
@@ -24,6 +26,16 @@ class PostProcessor:
             j = json.load(fp)
             
         return j
+    
+    def read_csv(self, csv_file: str):
+        df = pd.read_csv(csv_file)
+        return df
+    
+    def clean_text(self, text: str) -> str:
+        text = re.sub(r"https?://\S+|www\.\S+", "", text)
+        text = re.sub(r"[^a-zA-Z0-9\s]", '', text)
+        text = emoji.replace_emoji(text, replace='')
+        return text
     
     def tokenize(self, text: str):
         tokens = word_tokenize(text.lower())
@@ -59,8 +71,9 @@ class PostProcessor:
 if __name__ == "__main__":
     post = PostProcessor()
     data = post.read_json("data/static-scrapping.txt")
-    data = [post.tokenize(f"{document['title']} {document['selftext']}") for document in data]
-    topics = post.get_topic(data)
+    tokens = [post.tokenize(f"{document['title']} {document['selftext']}") for document in data]
+    topics = [document["subreddit"] for document in data]
+    #topics = post.get_topic(tokens)
     
-    vector = post.doc2vec(data, 2, 2, 50)
+    vector = post.doc2vec(tokens, 2, 2, 50)
 """
