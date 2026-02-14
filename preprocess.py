@@ -9,7 +9,7 @@ class Preprocessor:
     def __init__(self):
         pass
     
-    def preprocess_posts(self, posts: List[Dict]) -> List[Dict]:
+    def preprocess_posts(self, posts: List[Dict], subreddit: str) -> List[Dict]:
         """
         - Remove HTML tags and special characters
         - Filter out promoted/advertisement posts
@@ -19,7 +19,7 @@ class Preprocessor:
         """
         processed_posts = []
         
-        print("\nPreprocessing posts...")
+        print(f"\nPreprocessing posts from r/{subreddit}...")
         
         for post in posts:
             # Skip ads/promoted posts
@@ -44,6 +44,7 @@ class Preprocessor:
                 'is_self': post.get('is_self', False),
                 'link_flair_text': post.get('link_flair_text', ''),
                 'domain': post.get('domain', ''),
+                'subreddit': subreddit,
                 'is_video': post.get('is_video', False),
                 'over_18': post.get('over_18', False)
             }
