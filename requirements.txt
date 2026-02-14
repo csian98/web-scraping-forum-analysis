@@ -8,3 +8,4 @@ emoji
 nltk
 scikit-learn
 gensim
+matplotlib

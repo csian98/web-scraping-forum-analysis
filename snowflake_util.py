@@ -87,3 +87,13 @@ def merge_to_posts(con):
         )
         result = cur.fetchone()
         print(f"Rows inserted: {result[0]}, Rows updated: {result[1]}")
+
+
+def get_posts_embeddings(con):
+    print("\nFetching posts with embeddings from Snowflake...")
+    with con.cursor() as cur:
+        cur.execute("USE SCHEMA VECTOR")
+        cur.execute("SELECT * FROM POSTS_EMBEDDINGS")
+        posts_df = cur.fetch_pandas_all()
+    print(f"Fetched {len(posts_df)} posts with embeddings from Snowflake")
+    return posts_df
