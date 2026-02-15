@@ -4,6 +4,7 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from postprocess import *
 from snowflake_util import get_connection, get_posts_embeddings
+import joblib
 
 np.seterr(divide="ignore", over="ignore", invalid="ignore")
 
@@ -24,6 +25,7 @@ def main():
 
     model = KMeans(n_clusters=len(labels), init="k-means++", n_init="auto")
     model.fit(X)
+    joblib.dump(model, "model/kmeans_model.joblib")
 
     pca = PCA(n_components=2)
     pca.fit(X)

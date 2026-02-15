@@ -87,6 +87,7 @@ def merge_to_posts(con):
         )
         result = cur.fetchone()
         print(f"Rows inserted: {result[0]}, Rows updated: {result[1]}")
+        return result[0]
 
 
 def get_posts_embeddings(con):
@@ -97,3 +98,15 @@ def get_posts_embeddings(con):
         posts_df = cur.fetch_pandas_all()
     print(f"Fetched {len(posts_df)} posts with embeddings from Snowflake")
     return posts_df
+
+
+def set_model_status(con, status):
+    with con.cursor() as cur:
+        cur.execute("USE SCHEMA STATUS")
+        cur.execute(
+            f"""
+                    UPDATE MODEL_STATUS 
+                    SET UPDATE_STATUS = {status},
+                        LAST_UPDATED = CURRENT_TIMESTAMP()
+                    WHERE TRUE"""
+        )

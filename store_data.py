@@ -28,13 +28,13 @@ subreddits = [
     "ArtificialInteligence",
     "shortstories",
 ]
-remaining = args.num_posts
+posts_per_subreddit = args.num_posts // len(subreddits)
 all_posts = []
 
 print("=" * 70)
 print("REDDIT SCRAPER & PREPROCESSOR")
 for subreddit in subreddits:
-    if remaining <= 0:
+    if posts_per_subreddit <= 0:
         break
 
     print(f"\nSubreddit: r/{subreddit}")
@@ -43,7 +43,7 @@ for subreddit in subreddits:
     scraper = RedditScraper(subreddit=subreddit)
 
     print("Fetching posts from Reddit...")
-    raw_posts = scraper.fetch_posts(remaining)
+    raw_posts = scraper.fetch_posts(posts_per_subreddit)
 
     if scraper.posts_fetched == 0:
         print(f"No posts fetched from r/{subreddit}. Skipping to next subreddit.")
@@ -51,7 +51,6 @@ for subreddit in subreddits:
 
     processed_posts = Preprocessor().preprocess_posts(raw_posts, subreddit=subreddit)
 
-    remaining -= scraper.posts_fetched
     all_posts.extend(processed_posts)
 
 if not all_posts:
