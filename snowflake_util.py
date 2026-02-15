@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 import snowflake.connector
-import pandas as pd
 from snowflake.connector.pandas_tools import write_pandas
 
 load_dotenv()
@@ -110,3 +109,24 @@ def set_model_status(con, status):
                         LAST_UPDATED = CURRENT_TIMESTAMP()
                     WHERE TRUE"""
         )
+
+
+def get_model_status(con):
+    with con.cursor() as cur:
+        cur.execute("USE SCHEMA STATUS")
+        cur.execute("SELECT UPDATE_STATUS FROM MODEL_STATUS")
+        result = cur.fetchone()
+        return result[0]
+
+
+def embed_text(con, text):
+    with con.cursor() as cur:
+        cur.execute(
+            f"""SELECT 
+                    SNOWFLAKE.CORTEX.EMBED_TEXT_1024(
+                        'snowflake-arctic-embed-l-v2.0',
+                        '{text}'
+                    )"""
+        )
+        result = cur.fetchone()
+        return result[0]

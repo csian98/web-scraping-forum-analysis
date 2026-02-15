@@ -73,13 +73,13 @@ while True:
             posts_with_embeddings_df = get_posts_embeddings(con)
             X = posts_with_embeddings_df["EMBEDDING"].to_list()
 
-            y = posts_with_embeddings_df["TOPIC"].to_list()
-            labels = np.unique(y)
-
-            model = KMeans(n_clusters=len(labels), init="k-means++", n_init="auto")
+            model = KMeans(n_clusters=2, init="k-means++", n_init="auto")
             model.fit(X)
             joblib.dump(model, "model/kmeans_model.joblib")
 
+            predictions = model.predict(X)
+            posts_with_embeddings_df["CLUSTER_ID"] = predictions
+            posts_with_embeddings_df.to_csv("data/posts_with_clusters.csv", index=False)
             set_model_status(con, "FALSE")
             print("Model retraining complete.")
 
